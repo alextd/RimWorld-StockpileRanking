@@ -82,8 +82,8 @@ namespace Stockpile_Ranking
 		{
 			IStoreSettingsParent storeSettingsParent = SelStoreInfo.GetValue(tab, null) as IStoreSettingsParent;
 			StorageSettings settings = storeSettingsParent.GetStoreSettings();
-			int count = RankComp.CountFilters(settings);
-			if (curRank >= count) curRank = count - 1;
+			int count = RankComp.CountExtraFilters(settings);
+			if (curRank > count) curRank = count;
 
 			//ITab_Storage.WinSize = 300
 			Rect rect = new Rect(0f, (float)GetTopAreaHeight.Invoke(tab, new object[] { }) - TopAreaHeight.rankHeight - 2, 280, TopAreaHeight.rankHeight);
@@ -98,13 +98,13 @@ namespace Stockpile_Ranking
 			}
 
 			//Right Arrow
-			if (curRank == count - 1)
+			if (curRank == count)
 			{
 				if (Widgets.ButtonImage(rect.RightPartPixels(TopAreaHeight.rankHeight), Tex.Plus))
 				{
 					ThingFilter newFilter = new ThingFilter();
-					newFilter.CopyAllowancesFrom(RankComp.GetFilter(settings, curRank));
-					RankComp.SetFilter(settings, ++curRank, newFilter);
+					newFilter.CopyAllowancesFrom(RankComp.GetFilter(settings, curRank++));
+					RankComp.AddFilter(settings, newFilter);
 				}
 			}
 			else
