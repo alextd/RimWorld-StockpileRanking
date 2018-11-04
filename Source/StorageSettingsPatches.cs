@@ -31,4 +31,14 @@ namespace Stockpile_Ranking
 				RankComp.AddFilter(__instance, rank);
 		}
 	}
+
+	[HarmonyPatch(typeof(StorageSettings), "CopyFrom")]
+	class CopyFrom
+	{
+		//public void CopyFrom(StorageSettings other)
+		public static void Prefix(StorageSettings __instance, StorageSettings other)
+		{
+			RankComp.CopyFrom(__instance, other);
+		}
+	}
 }

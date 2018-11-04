@@ -30,6 +30,12 @@ namespace Stockpile_Ranking
 			return newList;
 		}
 
+		public static void RemoveRanks(StorageSettings settings)
+		{
+			var dict = Get();
+			dict.Remove(settings);
+		}
+
 		public static int CountExtraFilters(StorageSettings settings)
 		{
 			return GetRanks(settings).Count;
@@ -38,6 +44,25 @@ namespace Stockpile_Ranking
 		public static void AddFilter(StorageSettings settings, ThingFilter filter)
 		{
 			GetRanks(settings).Add(filter);
+		}
+
+		public static void CopyFrom(StorageSettings settings, StorageSettings other)
+		{
+			List<ThingFilter> otherRanks = GetRanks(other, false);
+			if(otherRanks == null)
+			{
+				RemoveRanks(settings);
+				return;
+			}
+
+			List<ThingFilter> ranks = GetRanks(settings);
+			ranks.Clear();
+			foreach(ThingFilter otherFilter in otherRanks)
+			{
+				ThingFilter filter = new ThingFilter();
+				filter.CopyAllowancesFrom(otherFilter);
+				ranks.Add(filter);
+			}
 		}
 
 		public static ThingFilter GetFilter(StorageSettings settings, int rank)
