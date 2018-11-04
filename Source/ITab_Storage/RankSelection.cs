@@ -37,19 +37,35 @@ namespace Stockpile_Ranking
 			//		public static void BeginGroup(Rect position);
 			MethodInfo BeginGroupInfo = AccessTools.Method(typeof(GUI), nameof(GUI.BeginGroup), new Type[] { typeof(Rect) });
 
+			//class Verse.ThingFilter RimWorld.StorageSettings::'filter'
+			FieldInfo filterInfo = AccessTools.Field(typeof(StorageSettings), "filter");
+			MethodInfo DoThingFilterConfigWindowInfo = AccessTools.Method(typeof(ThingFilterUI), "DoThingFilterConfigWindow");
+
 			bool firstTopAreaHeight = true;
-			foreach (CodeInstruction i in instructions)
+			List<CodeInstruction> instList = instructions.ToList();
+			for(int i=0;i<instList.Count;i++)
 			{
-				yield return i;
+				CodeInstruction inst = instList[i];
+
+				if (inst.opcode == OpCodes.Ldfld && inst.operand == filterInfo &&
+					instList[i + 8].opcode == OpCodes.Call && instList[i + 8].operand == DoThingFilterConfigWindowInfo)
+				{
+					//instead of settings.filter, do RankComp.GetFilter(settings, curRank)
+					yield return new CodeInstruction(OpCodes.Ldsfld, AccessTools.Field(typeof(FillTab), "curRank"));
+					yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(RankComp), "GetFilter"));
+				}
+				else
+					yield return inst;
+
 				if (firstTopAreaHeight && 
-					i.opcode == OpCodes.Call && i.operand == GetTopAreaHeight)
+					inst.opcode == OpCodes.Call && inst.operand == GetTopAreaHeight)
 				{
 					firstTopAreaHeight = false;
 					yield return new CodeInstruction(OpCodes.Ldc_R4, TopAreaHeight.rankHeight);
 					yield return new CodeInstruction(OpCodes.Sub);
 				}
 
-				if(i.opcode == OpCodes.Call && i.operand == BeginGroupInfo)
+				if(inst.opcode == OpCodes.Call && inst.operand == BeginGroupInfo)
 				{
 					yield return new CodeInstruction(OpCodes.Ldarg_0);//ITab_Storage this
 					yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(FillTab), nameof(DrawRanking)));
@@ -66,7 +82,7 @@ namespace Stockpile_Ranking
 		{
 			IStoreSettingsParent storeSettingsParent = SelStoreInfo.GetValue(tab, null) as IStoreSettingsParent;
 			StorageSettings settings = storeSettingsParent.GetStoreSettings();
-			int count = RankComp.Count(settings);
+			int count = RankComp.CountFilters(settings);
 			if (curRank >= count) curRank = count - 1;
 
 			//ITab_Storage.WinSize = 300
@@ -86,10 +102,9 @@ namespace Stockpile_Ranking
 			{
 				if (Widgets.ButtonImage(rect.RightPartPixels(TopAreaHeight.rankHeight), Tex.Plus))
 				{
-					curRank++;
 					ThingFilter newFilter = new ThingFilter();
-					newFilter.CopyAllowancesFrom(settings.filter);
-					RankComp.Set(settings, curRank, newFilter);
+					newFilter.CopyAllowancesFrom(RankComp.GetFilter(settings, curRank));
+					RankComp.SetFilter(settings, ++curRank, newFilter);
 				}
 			}
 			else

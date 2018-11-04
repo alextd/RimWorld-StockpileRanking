@@ -23,36 +23,36 @@ namespace Stockpile_Ranking
 			return Current.Game.GetComponent<RankComp>().rankedSettings;
 		}
 
-		public static int Count(StorageSettings set)
+		public static int CountFilters(StorageSettings settings)
 		{
 			var dict = Get();
 			for (int k = 1; k < 100;k++)//100 is beyond reasonable usage
 			{
-				Key key = new Key(set, k);
+				Key key = new Key(settings, k);
 				if (!dict.ContainsKey(key))
 					return k;
 			}
 			return 100;
 		}
 
-		public static void Set(StorageSettings set, int rank, ThingFilter filter)
+		public static void SetFilter(StorageSettings settings, int rank, ThingFilter filter)
 		{
 			var dict = Get();
-			dict[new Key(set, rank)] = filter;
+			dict[new Key(settings, rank)] = filter;
 		}
 
-		public static ThingFilter Get(StorageSettings set, int rank)
+		public static ThingFilter GetFilter(StorageSettings settings, int rank)
 		{
 			var dict = Get();
-			ThingFilter filter = null;
-			dict.TryGetValue(new Key(set, rank), out filter);
-			return filter;
+			if (dict.TryGetValue(new Key(settings, rank), out ThingFilter filter))
+				return filter;
+			return settings.filter;
 		}
 
-		public static void Remove(StorageSettings set, int rank)
+		public static void Remove(StorageSettings settings, int rank)
 		{
 			var dict = Get();
-			dict.Remove(new Key(set, rank));
+			dict.Remove(new Key(settings, rank));
 		}
 	}
 }
