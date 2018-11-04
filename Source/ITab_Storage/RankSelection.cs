@@ -56,21 +56,52 @@ namespace Stockpile_Ranking
 				}
 			}
 		}
+
+		//-----------------------------------------------
+		//Here's the meat
+		//-----------------------------------------------
+		public static int curRank = 0;
+		public static PropertyInfo SelStoreInfo = AccessTools.Property(typeof(ITab_Storage), "SelStoreSettingsParent");
 		public static void DrawRanking(ITab_Storage tab)
 		{
+			IStoreSettingsParent storeSettingsParent = SelStoreInfo.GetValue(tab, null) as IStoreSettingsParent;
+			StorageSettings settings = storeSettingsParent.GetStoreSettings();
+			int count = RankComp.Count(settings);
+			if (curRank >= count) curRank = count - 1;
+
 			//ITab_Storage.WinSize = 300
 			Rect rect = new Rect(0f, (float)GetTopAreaHeight.Invoke(tab, new object[] { }) - TopAreaHeight.rankHeight - 2, 280, TopAreaHeight.rankHeight);
-			
+
 			//Left Arrow
-			Widgets.ButtonImage(rect.LeftPartPixels(TopAreaHeight.rankHeight), TexUI.ArrowTexLeft);
+			if (curRank > 0)
+			{
+				if (Widgets.ButtonImage(rect.LeftPartPixels(TopAreaHeight.rankHeight), TexUI.ArrowTexLeft))
+				{
+					curRank--;
+				}
+			}
 
 			//Right Arrow
-			Widgets.ButtonImage(rect.RightPartPixels(TopAreaHeight.rankHeight), Tex.Plus);
+			if (curRank == count - 1)
+			{
+				if (Widgets.ButtonImage(rect.RightPartPixels(TopAreaHeight.rankHeight), Tex.Plus))
+				{
+					curRank++;
+					RankComp.Set(settings, curRank, settings.filter);
+				}
+			}
+			else
+			{
+				if (Widgets.ButtonImage(rect.RightPartPixels(TopAreaHeight.rankHeight), TexUI.ArrowTexRight))
+				{
+					curRank++;
+				}
+			}
 
 			//Label
 			rect.x += TopAreaHeight.rankHeight + 2;
 			Text.Font = GameFont.Small;
-			Widgets.Label(rect, "Rank 1 example");
+			Widgets.Label(rect, $"Rank {curRank+1}");
 		}
 	}
 }
