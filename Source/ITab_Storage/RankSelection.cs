@@ -104,4 +104,15 @@ namespace Stockpile_Ranking
 			Widgets.Label(rect, $"Rank {curRank+1}");
 		}
 	}
+
+	[HarmonyPatch(typeof(InspectTabBase), "OnOpen")]
+	static class ResetCurRank
+	{
+		//public virtual void OnOpen()
+		public static void Postfix(InspectTabBase __instance)
+		{
+			if (__instance is ITab_Storage)
+				FillTab.curRank = 0;
+		}
+	}
 }
