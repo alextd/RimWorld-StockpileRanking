@@ -87,7 +87,9 @@ namespace Stockpile_Ranking
 				if (Widgets.ButtonImage(rect.RightPartPixels(TopAreaHeight.rankHeight), Tex.Plus))
 				{
 					curRank++;
-					RankComp.Set(settings, curRank, settings.filter);
+					ThingFilter newFilter = new ThingFilter();
+					newFilter.CopyAllowancesFrom(settings.filter);
+					RankComp.Set(settings, curRank, newFilter);
 				}
 			}
 			else
