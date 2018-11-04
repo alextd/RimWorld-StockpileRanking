@@ -41,5 +41,11 @@ namespace Stockpile_Ranking
 		{
 			return rank == 0 ? settings.filter : GetRanks(settings)[rank - 1];
 		}
+
+		public static void RemoveFilter(StorageSettings settings, int rank)
+		{
+			if (rank == 0) return;//sanity check
+			GetRanks(settings).RemoveAt(rank - 1);
+		}
 	}
 }

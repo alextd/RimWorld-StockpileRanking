@@ -24,7 +24,8 @@ namespace Stockpile_Ranking
 	[StaticConstructorOnStartup]
 	static class Tex
 	{
-		public static Texture2D Plus = ContentFinder<Texture2D>.Get("UI/Buttons/Plus", true);
+		public static readonly Texture2D Plus = ContentFinder<Texture2D>.Get("UI/Buttons/Plus", true);
+		public static readonly Texture2D DeleteX = ContentFinder<Texture2D>.Get("UI/Buttons/Delete", true);
 	}
 
 	[HarmonyPatch(typeof(ITab_Storage), "FillTab")]
@@ -85,22 +86,26 @@ namespace Stockpile_Ranking
 			int count = RankComp.CountExtraFilters(settings);
 			if (curRank > count) curRank = count;
 
+			float buttonMargin = TopAreaHeight.rankHeight + 2;
+
 			//ITab_Storage.WinSize = 300
 			Rect rect = new Rect(0f, (float)GetTopAreaHeight.Invoke(tab, new object[] { }) - TopAreaHeight.rankHeight - 2, 280, TopAreaHeight.rankHeight);
 
 			//Left Arrow
+			Rect leftButtonRect = rect.LeftPartPixels(TopAreaHeight.rankHeight);
 			if (curRank > 0)
 			{
-				if (Widgets.ButtonImage(rect.LeftPartPixels(TopAreaHeight.rankHeight), TexUI.ArrowTexLeft))
+				if (Widgets.ButtonImage(leftButtonRect, TexUI.ArrowTexLeft))
 				{
 					curRank--;
 				}
 			}
 
 			//Right Arrow
+			Rect rightButtonRect = rect.RightPartPixels(TopAreaHeight.rankHeight);
 			if (curRank == count)
 			{
-				if (Widgets.ButtonImage(rect.RightPartPixels(TopAreaHeight.rankHeight), Tex.Plus))
+				if (Widgets.ButtonImage(rightButtonRect, Tex.Plus))
 				{
 					ThingFilter newFilter = new ThingFilter();
 					newFilter.CopyAllowancesFrom(RankComp.GetFilter(settings, curRank++));
@@ -109,14 +114,25 @@ namespace Stockpile_Ranking
 			}
 			else
 			{
-				if (Widgets.ButtonImage(rect.RightPartPixels(TopAreaHeight.rankHeight), TexUI.ArrowTexRight))
+				if (Widgets.ButtonImage(rightButtonRect, TexUI.ArrowTexRight))
 				{
 					curRank++;
 				}
 			}
 
+			//Delete rank button
+			rightButtonRect.x -= buttonMargin;
+			if (curRank > 0)
+			{
+				if (Widgets.ButtonImage(rightButtonRect, Tex.DeleteX))
+				{
+					RankComp.RemoveFilter(settings, curRank--);
+				}
+			}
+
 			//Label
-			rect.x += TopAreaHeight.rankHeight + 2;
+			rect.x += buttonMargin;
+			rect.width -= buttonMargin * 3;
 			Text.Font = GameFont.Small;
 			Widgets.Label(rect, $"Rank {curRank+1}");
 		}
