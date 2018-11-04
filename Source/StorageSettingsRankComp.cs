@@ -30,6 +30,12 @@ namespace Stockpile_Ranking
 			return newList;
 		}
 
+		public static bool HasRanks(StorageSettings settings)
+		{
+			var dict = Get();
+			return dict.ContainsKey(settings);
+		}
+
 		public static void RemoveRanks(StorageSettings settings)
 		{
 			var dict = Get();
