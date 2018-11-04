@@ -26,6 +26,8 @@ namespace Stockpile_Ranking
 	{
 		public static readonly Texture2D Plus = ContentFinder<Texture2D>.Get("UI/Buttons/Plus", true);
 		public static readonly Texture2D DeleteX = ContentFinder<Texture2D>.Get("UI/Buttons/Delete", true);
+		public static readonly Texture2D ArrowLeft = ContentFinder<Texture2D>.Get("ArrowLeftColor", true);
+		public static readonly Texture2D ArrowRight = ContentFinder<Texture2D>.Get("ArrowRightColor", true);
 	}
 
 	[HarmonyPatch(typeof(ITab_Storage), "FillTab")]
@@ -95,7 +97,7 @@ namespace Stockpile_Ranking
 			Rect leftButtonRect = rect.LeftPartPixels(TopAreaHeight.rankHeight);
 			if (curRank > 0)
 			{
-				if (Widgets.ButtonImage(leftButtonRect, TexUI.ArrowTexLeft))
+				if (Widgets.ButtonImage(leftButtonRect, Tex.ArrowLeft))
 				{
 					curRank--;
 				}
@@ -114,7 +116,7 @@ namespace Stockpile_Ranking
 			}
 			else
 			{
-				if (Widgets.ButtonImage(rightButtonRect, TexUI.ArrowTexRight))
+				if (Widgets.ButtonImage(rightButtonRect, Tex.ArrowRight))
 				{
 					curRank++;
 				}
