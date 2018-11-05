@@ -51,66 +51,20 @@ namespace Stockpile_Ranking
 		public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
 		{
 			FieldInfo filterInfo = AccessTools.Field(typeof(StorageSettings), "filter");
-			MethodInfo allowsInfo = AccessTools.Method(typeof(ThingFilter), "Allows", new Type[] { typeof(Thing)});
 
 			foreach (CodeInstruction i in instructions)
 			{
 				//instead of this.filter.Allows(t)
-				//this.Allows(t)
+				//RankComp.UsedFilter(this).Allows(t)
 				//so the ilcodes are this, filter, t, Allows
-				// remove filter and change Allows
+				// replace filter with UsedFilter
 				if (i.opcode == OpCodes.Ldfld && i.operand == filterInfo)
 				{
-					continue;
-				}
-				else if(i.opcode == OpCodes.Callvirt && i.operand == allowsInfo)
-				{
-					yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(AllowedToAccept_Thing), nameof(StorageAllows)));
+					yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(RankComp), nameof(RankComp.UsedFilter)));
 				}
 				else
 					yield return i;
 			}
-		}
-
-		public static bool StorageAllows(StorageSettings settings, Thing thing)
-		{
-			if (settings.filter.Allows(thing)) return true;
-
-			if (!RankComp.HasRanks(settings))
-				return false;
-
-			//Find map
-			Map map = null;
-			if (settings.owner is IHaulDestination haulDestination)
-				map = haulDestination.Map;
-			//that should be good enough
-			//else if (settings.owner is ISlotGroupParent slotGroupParent)
-			//	map = slotGroupParent.Map;
-
-			if (map == null)
-				return false;
-
-			List<ThingFilter> ranks = RankComp.GetRanks(settings);
-			ThingFilter bestFilter = settings.filter;
-			
-			//Find haulables that are in lower priority storage
-			//Don't check if they are valid for that storage, since that would call this again and cause a stack overflow!
-			List<Thing> haulables = map.listerHaulables.ThingsPotentiallyNeedingHauling().
-				FindAll(t => (StoreUtility.CurrentHaulDestinationOf(t)?.GetStoreSettings().Priority ?? StoragePriority.Unstored) < settings.Priority);
-
-			for (int i = 0; i < ranks.Count; i++)
-			{
-				//if any higher-ranking item is available, don't look at lower ranks
-				if (haulables.Any(t => bestFilter.Allows(t)))
-					return false;
-
-				//Nothing to fit higher rank, see if next rank works:
-
-				bestFilter = ranks[i];
-				if (bestFilter.Allows(thing))
-					return true;
-			}
-			return false;
 		}
 	}
 }
