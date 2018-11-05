@@ -115,7 +115,6 @@ namespace Stockpile_Ranking
 					ThingFilter newFilter = new ThingFilter();
 					newFilter.CopyAllowancesFrom(RankComp.GetFilter(settings, curRank++));
 					RankComp.AddFilter(settings, newFilter);
-					RankComp.DetermineUsedFilter(settings);
 				}
 			}
 			else

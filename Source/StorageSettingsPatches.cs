@@ -41,7 +41,6 @@ namespace Stockpile_Ranking
 		public static void Prefix(StorageSettings __instance, StorageSettings other)
 		{
 			RankComp.CopyFrom(__instance, other);
-			RankComp.DetermineUsedFilter(__instance);
 		}
 	}
 
