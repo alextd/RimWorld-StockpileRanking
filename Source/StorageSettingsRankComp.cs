@@ -159,12 +159,13 @@ namespace Stockpile_Ranking
 			return GetRanks(settings, false)?.Count ?? 0;
 		}
 
+		public static FieldInfo callbackInfo = AccessTools.Field(typeof(ThingFilter), "settingsChangedCallback");
 		public static void AddFilter(StorageSettings settings, ThingFilter filter)
 		{
+			callbackInfo.SetValue(filter, callbackInfo.GetValue(settings.filter));
 			GetRanks(settings).Add(filter);
 		}
 
-		public static FieldInfo callbackInfo = AccessTools.Field(typeof(ThingFilter), "settingsChangedCallback");
 		public static void CopyFrom(StorageSettings settings, StorageSettings other)
 		{
 			List<ThingFilter> otherRanks = GetRanks(other, false);

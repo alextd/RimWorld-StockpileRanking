@@ -81,7 +81,6 @@ namespace Stockpile_Ranking
 		//-----------------------------------------------
 		public static int curRank = 0;
 		public static PropertyInfo SelStoreInfo = AccessTools.Property(typeof(ITab_Storage), "SelStoreSettingsParent");
-		public static FieldInfo callbackInfo = AccessTools.Field(typeof(ThingFilter), "settingsChangedCallback");
 		public static void DrawRanking(ITab_Storage tab)
 		{
 			IStoreSettingsParent storeSettingsParent = SelStoreInfo.GetValue(tab, null) as IStoreSettingsParent;
@@ -113,7 +112,7 @@ namespace Stockpile_Ranking
 			{
 				if (Widgets.ButtonImage(rightButtonRect, Tex.Plus))
 				{
-					ThingFilter newFilter = new ThingFilter(callbackInfo.GetValue(settings.filter) as Action);
+					ThingFilter newFilter = new ThingFilter();
 					newFilter.CopyAllowancesFrom(RankComp.GetFilter(settings, curRank++));
 					RankComp.AddFilter(settings, newFilter);
 					RankComp.DetermineUsedFilter(settings);
