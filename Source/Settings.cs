@@ -19,8 +19,11 @@ namespace Stockpile_Ranking
 		{
 			var options = new Listing_Standard();
 			options.Begin(wrect);
-			
+
+			bool old = returnLower;
 			options.CheckboxLabeled("Return items when higher ranked items become available", ref returnLower);
+			if (old != returnLower)
+				RankComp.Get().dirty = true;
 			options.Label("This also will require more processing time. Disable it if there seems to be a problem.");
 			options.Label("This assumes a stockpile with lower priority with space to move lower-ranked items to.");
 			options.Label("Items would normally be returned when there is a spot in the ranked stockpile open (Not by design but due to internal cache)");
