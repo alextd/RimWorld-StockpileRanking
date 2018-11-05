@@ -139,15 +139,6 @@ namespace Stockpile_Ranking
 			return rankedSettings.ContainsKey(settings);
 		}
 
-		public static MethodInfo TryNotifyChangedInfo = AccessTools.Method(typeof(StorageSettings), "TryNotifyChanged");
-		public void RemoveRanks(StorageSettings settings)
-		{
-			rankedSettings.Remove(settings);
-			
-			TryNotifyChangedInfo.Invoke(settings, null);
-			DetermineUsedFilter(settings, GetRanks(settings, false));
-		}
-
 		public int CountExtraFilters(StorageSettings settings)
 		{
 			return GetRanks(settings, false)?.Count ?? 0;
@@ -174,7 +165,7 @@ namespace Stockpile_Ranking
 			List<ThingFilter> otherRanks = GetRanks(other, false);
 			if (otherRanks == null)
 			{
-				RemoveRanks(settings);
+				rankedSettings.Remove(settings);
 			}
 			else
 			{
@@ -192,13 +183,14 @@ namespace Stockpile_Ranking
 			return rank == 0 ? settings.filter : Get().GetRanks(settings)[rank - 1];
 		}
 
+		public static MethodInfo TryNotifyChangedInfo = AccessTools.Method(typeof(StorageSettings), "TryNotifyChanged");
 		public void RemoveFilter(StorageSettings settings, int rank)
 		{
 			if (rank == 0) return;//sanity check
 			List<ThingFilter> ranks = GetRanks(settings);
 			if (ranks.Count == 1)
 			{
-				RemoveRanks(settings);
+				rankedSettings.Remove(settings);
 			}
 			else
 			{
