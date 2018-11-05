@@ -72,10 +72,22 @@ namespace Stockpile_Ranking
 
 			//Find haulables that are in lower priority storage
 			//Don't check if they are valid for that storage, since that would call filter.Allows() but wouldn't check lower-ranked filters
+			//listerHaulables isn't perfect since things in good storage aren't listed
+			//listerHaulables doesn't know if a higher-rank filter would apply, because we use that list to determine if the higher-rank applies to begin with...
+			//It's a circular dependency
+			//listerHaulables will get refilled when an item is missing from the ranked storage, 
+			//so then things are all haulable to higher priority and put in listerHaulables 
+			//and then DetermineUsedFilter finds which is best and sets the filter 
+			//so then listerHaulables removes things that fit the higher-rank filter
+
 			List<Thing> haulables = map.listerHaulables.ThingsPotentiallyNeedingHauling().
 				FindAll(t => (StoreUtility.CurrentHaulDestinationOf(t)?.GetStoreSettings().Priority ?? StoragePriority.Unstored) < settings.Priority);
 
-			Log.Message($"DetermineUsedFilter for {settings.owner}");
+			//List<Thing> haulables = map.listerThings.ThingsInGroup(ThingRequestGroup.HaulableAlways).
+			//	FindAll(t => !t.IsForbidden(Faction.OfPlayer) &&
+			//	(StoreUtility.CurrentHaulDestinationOf(t)?.GetStoreSettings().Priority ?? StoragePriority.Unstored) < settings.Priority &&
+			//	ranks.Last().Allows(t));
+
 			Log.Message($"haulables are {haulables.ToStringSafeEnumerable()}");
 			//Loop but don't include last filter
 			for (int i = 0; i < ranks.Count; i++)
