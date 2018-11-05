@@ -144,7 +144,7 @@ namespace Stockpile_Ranking
 
 		public static int CountExtraFilters(StorageSettings settings)
 		{
-			return GetRanks(settings).Count;
+			return GetRanks(settings, false)?.Count ?? 0;
 		}
 
 		public static void AddFilter(StorageSettings settings, ThingFilter filter)
