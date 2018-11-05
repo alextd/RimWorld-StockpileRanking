@@ -75,6 +75,17 @@ namespace Stockpile_Ranking
 				}
 			}
 		}
+		public static void Postfix(ITab_Storage __instance)
+		{
+			IStoreSettingsParent storeSettingsParent = SelStoreInfo.GetValue(__instance, null) as IStoreSettingsParent;
+			if (storeSettingsParent == null) return;
+			StorageSettings settings = storeSettingsParent.GetStoreSettings();
+			if (settings == null) return;
+
+			//If this is open when the game is paused, filter changes need to be updated
+			if(Find.TickManager.CurTimeSpeed == TimeSpeed.Paused)
+				RankComp.DetermineUsedFilter(settings);
+		}
 
 		//-----------------------------------------------
 		//Here's the meat
@@ -84,7 +95,10 @@ namespace Stockpile_Ranking
 		public static void DrawRanking(ITab_Storage tab)
 		{
 			IStoreSettingsParent storeSettingsParent = SelStoreInfo.GetValue(tab, null) as IStoreSettingsParent;
+			if (storeSettingsParent == null) return;
 			StorageSettings settings = storeSettingsParent.GetStoreSettings();
+			if (settings == null) return;
+
 			int count = RankComp.CountExtraFilters(settings);
 			if (curRank > count) curRank = count;
 
@@ -112,6 +126,7 @@ namespace Stockpile_Ranking
 					ThingFilter newFilter = new ThingFilter();
 					newFilter.CopyAllowancesFrom(RankComp.GetFilter(settings, curRank++));
 					RankComp.AddFilter(settings, newFilter);
+					RankComp.DetermineUsedFilter(settings);
 				}
 			}
 			else

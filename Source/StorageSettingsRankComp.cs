@@ -43,6 +43,16 @@ namespace Stockpile_Ranking
 				DetermineUsedFilter(kvp.Key, kvp.Value);
 		}
 
+		public static void DetermineUsedFilter(StorageSettings settings)
+		{
+			var comp = Get();
+			comp.usedFilter.Remove(settings);
+			var ranks = GetRanks(settings, false);
+			if (ranks == null) return;
+
+			comp.DetermineUsedFilter(settings, ranks);
+		}
+
 		public void DetermineUsedFilter(StorageSettings settings, List<ThingFilter> ranks)
 		{
 			//Find map
