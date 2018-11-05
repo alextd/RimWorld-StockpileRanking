@@ -136,7 +136,10 @@ namespace Stockpile_Ranking
 			rect.x += buttonMargin;
 			rect.width -= buttonMargin * 3;
 			Text.Font = GameFont.Small;
-			Widgets.Label(rect, $"Rank {curRank+1}");
+			if(count == 0)
+				Widgets.Label(rect, "Add filter ranking:");
+			else
+				Widgets.Label(rect, $"Rank {curRank+1}");
 		}
 	}
 
