@@ -203,10 +203,10 @@ namespace Stockpile_Ranking
 			else
 			{
 				ranks.RemoveAt(rank - 1);
-
-				TryNotifyChangedInfo.Invoke(settings, null);
-				DetermineUsedFilter(settings, GetRanks(settings, false));
 			}
+
+			TryNotifyChangedInfo.Invoke(settings, null);
+			DetermineUsedFilter(settings, GetRanks(settings, false));
 		}
 	}
 }
