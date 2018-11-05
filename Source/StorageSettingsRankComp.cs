@@ -145,6 +145,7 @@ namespace Stockpile_Ranking
 			rankedSettings.Remove(settings);
 			
 			TryNotifyChangedInfo.Invoke(settings, null);
+			DetermineUsedFilter(settings, GetRanks(settings, false));
 		}
 
 		public int CountExtraFilters(StorageSettings settings)
@@ -181,6 +182,8 @@ namespace Stockpile_Ranking
 				foreach (ThingFilter otherFilter in otherRanks)
 					AddFilter(settings, otherFilter);
 			}
+
+			DetermineUsedFilter(settings, GetRanks(settings, false));
 		}
 
 		//This one is called from ilcode where it'd be tricky to get RankComp in front of arg list
@@ -202,6 +205,7 @@ namespace Stockpile_Ranking
 				ranks.RemoveAt(rank - 1);
 
 				TryNotifyChangedInfo.Invoke(settings, null);
+				DetermineUsedFilter(settings, GetRanks(settings, false));
 			}
 		}
 	}

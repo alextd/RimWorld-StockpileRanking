@@ -69,16 +69,4 @@ namespace Stockpile_Ranking
 			}
 		}
 	}
-
-	[HarmonyPatch(typeof(StorageSettings), "TryNotifyChanged")]
-	class TryNotifyChanged
-	{
-		//private void TryNotifyChanged()
-		public static void Prefix(StorageSettings __instance)
-		{
-			var comp = RankComp.Get();
-			comp.DetermineUsedFilter(__instance, comp.GetRanks(__instance, false));
-			//Not just making it dirty, since TryNotifyChanged probably uses the determined filter so it needs to be done now
-		}
-	}
 }
