@@ -67,6 +67,8 @@ namespace Stockpile_Ranking
 			if (map == null)
 				return;
 
+			Log.Message($"DetermineUsedFilter for {settings.owner}");
+
 			//First filter is just the one in the settings
 			ThingFilter bestFilter = settings.filter;
 
