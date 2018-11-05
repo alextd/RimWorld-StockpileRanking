@@ -39,10 +39,23 @@ namespace Stockpile_Ranking
 	class CopyFrom
 	{
 		//public void CopyFrom(StorageSettings other)
-		public static void Prefix(StorageSettings __instance, StorageSettings other)
+
+		public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
 		{
-			var comp = RankComp.Get();
-			comp.CopyFrom(__instance, other);
+			MethodInfo TryNotifyChangedInfo = AccessTools.Method(typeof(StorageSettings), "TryNotifyChanged");
+
+			foreach (CodeInstruction i in instructions)
+			{
+				if(i.opcode == OpCodes.Call && i.operand == TryNotifyChangedInfo)
+				{
+					//RankComp.Get().CopyFrom(__instance, other);
+					yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(RankComp), nameof(RankComp.Get)));
+					yield return new CodeInstruction(OpCodes.Ldarg_0);//this
+					yield return new CodeInstruction(OpCodes.Ldarg_1);//other
+					yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(RankComp), nameof(RankComp.CopyFrom)));
+				}
+				yield return i;
+			}
 		}
 	}
 
