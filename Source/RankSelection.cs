@@ -114,6 +114,7 @@ namespace Stockpile_Ranking
 				if (Widgets.ButtonImage(rightButtonRect, Tex.Plus))
 				{
 					comp.AddFilter(settings);
+					curRank++;
 				}
 			}
 			else
