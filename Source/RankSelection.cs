@@ -88,7 +88,8 @@ namespace Stockpile_Ranking
 			StorageSettings settings = storeSettingsParent.GetStoreSettings();
 			if (settings == null) return;
 
-			int count = RankComp.CountExtraFilters(settings);
+			var comp = RankComp.Get();
+			int count = comp.CountExtraFilters(settings);
 			if (curRank > count) curRank = count;
 
 			float buttonMargin = TopAreaHeight.rankHeight + 2;
@@ -112,7 +113,7 @@ namespace Stockpile_Ranking
 			{
 				if (Widgets.ButtonImage(rightButtonRect, Tex.Plus))
 				{
-					RankComp.Get().AddFilter(settings, RankComp.GetFilter(settings, curRank++));
+					comp.AddFilter(settings);
 				}
 			}
 			else
@@ -129,7 +130,7 @@ namespace Stockpile_Ranking
 			{
 				if (Widgets.ButtonImage(rightButtonRect, Tex.DeleteX))
 				{
-					RankComp.RemoveFilter(settings, curRank--);
+					comp.RemoveFilter(settings, curRank--);
 				}
 			}
 

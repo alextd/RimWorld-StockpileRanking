@@ -41,7 +41,8 @@ namespace Stockpile_Ranking
 		//public void CopyFrom(StorageSettings other)
 		public static void Prefix(StorageSettings __instance, StorageSettings other)
 		{
-			RankComp.CopyFrom(__instance, other);
+			var comp = RankComp.Get();
+			comp.CopyFrom(__instance, other);
 		}
 	}
 

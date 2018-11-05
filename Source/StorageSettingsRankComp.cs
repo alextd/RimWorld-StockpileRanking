@@ -112,11 +112,10 @@ namespace Stockpile_Ranking
 			//If all other filters had nothing available, the last filter is used:
 			usedFilter[settings] = bestFilter;
 		}
-
+		//This one is called from ilcode where it'd be tricky to get RankComp in front of arg list
 		public static ThingFilter UsedFilter(StorageSettings settings)
 		{
-			var dict = Get().usedFilter;
-			if (dict.TryGetValue(settings, out ThingFilter used))
+			if (Get().usedFilter.TryGetValue(settings, out ThingFilter used))
 			{
 				return used;
 			}
@@ -135,59 +134,60 @@ namespace Stockpile_Ranking
 			return newList;
 		}
 
-		public static bool HasRanks(StorageSettings settings)
+		public bool HasRanks(StorageSettings settings)
 		{
-			var dict = Get().rankedSettings;
-			return dict.ContainsKey(settings);
+			return rankedSettings.ContainsKey(settings);
 		}
 
 		public static MethodInfo TryNotifyChangedInfo = AccessTools.Method(typeof(StorageSettings), "TryNotifyChanged");
-		public static void RemoveRanks(StorageSettings settings)
+		public void RemoveRanks(StorageSettings settings)
 		{
-			Get().rankedSettings.Remove(settings);
+			rankedSettings.Remove(settings);
 			
 			TryNotifyChangedInfo.Invoke(settings, null);
 		}
 
-		public static int CountExtraFilters(StorageSettings settings)
+		public int CountExtraFilters(StorageSettings settings)
 		{
-			return Get().GetRanks(settings, false)?.Count ?? 0;
+			return GetRanks(settings, false)?.Count ?? 0;
 		}
 
 		public static FieldInfo callbackInfo = AccessTools.Field(typeof(ThingFilter), "settingsChangedCallback");
 		public static Action SettingsChangedAction(StorageSettings settings) => callbackInfo.GetValue(settings.filter) as Action;
-		public void AddFilter(StorageSettings settings, ThingFilter filter)
+		public void AddFilter(StorageSettings settings, ThingFilter filter = null)
 		{
+			if (filter == null)
+				filter = GetRanks(settings).Last();
 			ThingFilter newFilter = new ThingFilter(SettingsChangedAction(settings));
 			newFilter.CopyAllowancesFrom(filter);
 			GetRanks(settings).Add(newFilter);
 		}
 
-		public static void CopyFrom(StorageSettings settings, StorageSettings other)
+		public void CopyFrom(StorageSettings settings, StorageSettings other)
 		{
-			var comp = Get();
-			List<ThingFilter> otherRanks = comp.GetRanks(other, false);
+			List<ThingFilter> otherRanks = GetRanks(other, false);
 			if (otherRanks == null)
 			{
 				RemoveRanks(settings);
 			}
 			else
 			{
-				comp.GetRanks(settings).Clear();
+				GetRanks(settings).Clear();
 				foreach (ThingFilter otherFilter in otherRanks)
-					comp.AddFilter(settings, otherFilter);
+					AddFilter(settings, otherFilter);
 			}
 		}
 
+		//This one is called from ilcode where it'd be tricky to get RankComp in front of arg list
 		public static ThingFilter GetFilter(StorageSettings settings, int rank)
 		{
 			return rank == 0 ? settings.filter : Get().GetRanks(settings)[rank - 1];
 		}
-		
-		public static void RemoveFilter(StorageSettings settings, int rank)
+
+		public void RemoveFilter(StorageSettings settings, int rank)
 		{
 			if (rank == 0) return;//sanity check
-			Get().GetRanks(settings).RemoveAt(rank - 1);
+			GetRanks(settings).RemoveAt(rank - 1);
 
 			TryNotifyChangedInfo.Invoke(settings, null);
 		}
