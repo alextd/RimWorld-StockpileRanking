@@ -74,13 +74,11 @@ namespace Stockpile_Ranking
 
 		public static bool StorageAllows(StorageSettings settings, Thing thing)
 		{
-			Log.Message($"{settings.owner} Allows {thing}?");
 			if (settings.filter.Allows(thing)) return true;
 
 			if (!RankComp.HasRanks(settings))
 				return false;
 
-			Log.Message($"Checking ranks");
 			//Find map
 			Map map = null;
 			if (settings.owner is IHaulDestination haulDestination)
@@ -99,23 +97,18 @@ namespace Stockpile_Ranking
 			List<Thing> haulables = map.listerHaulables.ThingsPotentiallyNeedingHauling().
 				FindAll(t => StoreUtility.CurrentStoragePriorityOf(t) < settings.Priority);
 
-			Log.Message($"Haulable things {haulables.ToStringSafeEnumerable()}");
 			for (int i = 0; i < ranks.Count; i++)
 			{
-				Log.Message($"anything fits {bestFilter}?");
 				//if any higher-ranking item is available, don't look at lower ranks
 				if (haulables.Any(t => bestFilter.Allows(t)))
 					return false;
 
 				//Nothing to fit higher rank, see if next rank works:
-				Log.Message($"nothing fits {bestFilter}");
 
 				bestFilter = ranks[i];
-				Log.Message($"next filter {bestFilter}");
 				if (bestFilter.Allows(thing))
 					return true;
 			}
-			Log.Message($"no more filters to check so I'm gonna say no this is not allowed");
 			return false;
 		}
 	}
