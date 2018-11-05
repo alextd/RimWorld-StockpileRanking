@@ -148,10 +148,13 @@ namespace Stockpile_Ranking
 			return dict.ContainsKey(settings);
 		}
 
+		public static MethodInfo TryNotifyChangedInfo = AccessTools.Method(typeof(StorageSettings), "TryNotifyChanged");
 		public static void RemoveRanks(StorageSettings settings)
 		{
-			var dict = Get().rankedSettings;
-			dict.Remove(settings);
+			Get().rankedSettings.Remove(settings);
+			Get().usedFilter.Remove(settings);
+			
+			TryNotifyChangedInfo.Invoke(settings, null);
 		}
 
 		public static int CountExtraFilters(StorageSettings settings)
@@ -164,6 +167,9 @@ namespace Stockpile_Ranking
 		{
 			callbackInfo.SetValue(filter, callbackInfo.GetValue(settings.filter));
 			GetRanks(settings).Add(filter);
+
+			DetermineUsedFilter(settings);
+			TryNotifyChangedInfo.Invoke(settings, null);
 		}
 
 		public static void CopyFrom(StorageSettings settings, StorageSettings other)
@@ -194,6 +200,10 @@ namespace Stockpile_Ranking
 		{
 			if (rank == 0) return;//sanity check
 			GetRanks(settings).RemoveAt(rank - 1);
+
+
+			DetermineUsedFilter(settings);
+			TryNotifyChangedInfo.Invoke(settings, null);
 		}
 	}
 }
