@@ -96,7 +96,7 @@ namespace Stockpile_Ranking
 			//Find haulables that are in lower priority storage
 			//Don't check if they are valid for that storage, since that would call this again and cause a stack overflow!
 			List<Thing> haulables = map.listerHaulables.ThingsPotentiallyNeedingHauling().
-				FindAll(t => StoreUtility.CurrentHaulDestinationOf(t)?.GetStoreSettings().Priority < settings.Priority);
+				FindAll(t => (StoreUtility.CurrentHaulDestinationOf(t)?.GetStoreSettings().Priority ?? StoragePriority.Unstored) < settings.Priority);
 
 			for (int i = 0; i < ranks.Count; i++)
 			{
