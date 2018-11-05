@@ -81,7 +81,8 @@ namespace Stockpile_Ranking
 			//so then listerHaulables removes things that fit the higher-rank filter
 
 			List<Thing> haulables = map.listerHaulables.ThingsPotentiallyNeedingHauling().
-				FindAll(t => (StoreUtility.CurrentHaulDestinationOf(t)?.GetStoreSettings().Priority ?? StoragePriority.Unstored) < settings.Priority);
+				FindAll(t => (StoreUtility.CurrentHaulDestinationOf(t)?.GetStoreSettings().Priority ?? StoragePriority.Unstored) < settings.Priority &&
+				ranks.Last().Allows(t));
 
 			//List<Thing> haulables = map.listerThings.ThingsInGroup(ThingRequestGroup.HaulableAlways).
 			//	FindAll(t => !t.IsForbidden(Faction.OfPlayer) &&
