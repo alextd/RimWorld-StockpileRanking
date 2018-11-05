@@ -11,7 +11,7 @@ namespace Stockpile_Ranking
 		public Mod(ModContentPack content) : base(content)
 		{
 			// initialize settings
-			// GetSettings<Settings>();
+			GetSettings<Settings>();
 #if DEBUG
 			HarmonyInstance.DEBUG = true;
 #endif
@@ -31,15 +31,15 @@ namespace Stockpile_Ranking
 			return false;
 		}
 
-//		public override void DoSettingsWindowContents(Rect inRect)
-//		{
-//			base.DoSettingsWindowContents(inRect);
-//			GetSettings<Settings>().DoWindowContents(inRect);
-//		}
-//
-//		public override string SettingsCategory()
-//		{
-//			return "Stockpile Ranking";
-//		}
+		public override void DoSettingsWindowContents(Rect inRect)
+		{
+			base.DoSettingsWindowContents(inRect);
+			GetSettings<Settings>().DoWindowContents(inRect);
+		}
+
+		public override string SettingsCategory()
+		{
+			return "Stockpile Ranking";
+		}
 	}
 }

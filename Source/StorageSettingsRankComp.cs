@@ -87,14 +87,17 @@ namespace Stockpile_Ranking
 			//and then DetermineUsedFilter finds which is best and sets the filter 
 			//so then listerHaulables removes things that fit the higher-rank filter
 
-			List<Thing> haulables = map.listerHaulables.ThingsPotentiallyNeedingHauling().
-				FindAll(t => (StoreUtility.CurrentHaulDestinationOf(t)?.GetStoreSettings().Priority ?? StoragePriority.Unstored) < settings.Priority &&
-				ranks.Last().Allows(t));
-
-			//List<Thing> haulables = map.listerThings.ThingsInGroup(ThingRequestGroup.HaulableAlways).
-			//	FindAll(t => !t.IsForbidden(Faction.OfPlayer) &&
-			//	(StoreUtility.CurrentHaulDestinationOf(t)?.GetStoreSettings().Priority ?? StoragePriority.Unstored) < settings.Priority &&
-			//	ranks.Last().Allows(t));
+			List<Thing> haulables;
+			if (Settings.Get().returnLower)
+				haulables = map.listerThings.ThingsInGroup(ThingRequestGroup.HaulableAlways).
+					FindAll(t => !t.IsForbidden(Faction.OfPlayer) &&
+					(StoreUtility.CurrentHaulDestinationOf(t)?.GetStoreSettings().Priority ?? StoragePriority.Unstored) < settings.Priority &&
+					ranks.Last().Allows(t));
+			else
+				haulables = map.listerHaulables.ThingsPotentiallyNeedingHauling().
+					FindAll(t => 
+					(StoreUtility.CurrentHaulDestinationOf(t)?.GetStoreSettings().Priority ?? StoragePriority.Unstored) < settings.Priority &&
+					ranks.Last().Allows(t));
 
 			Log.Message($"haulables are {haulables.ToStringSafeEnumerable()}");
 			//Loop but don't include last filter
