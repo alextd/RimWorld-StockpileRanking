@@ -29,8 +29,8 @@ namespace Stockpile_Ranking
 			Scribe_Collections.Look(ref loadRanks, "ranks", LookMode.Deep);
 			if (loadRanks == null) return;
 
-			foreach (ThingFilter rank in loadRanks)
-				RankComp.AddFilter(__instance, rank);
+			foreach (ThingFilter filter in loadRanks)
+				RankComp.AddFilter(__instance, filter);
 		}
 	}
 

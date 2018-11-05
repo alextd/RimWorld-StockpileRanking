@@ -163,13 +163,11 @@ namespace Stockpile_Ranking
 			return GetRanks(settings, false)?.Count ?? 0;
 		}
 
-		public static FieldInfo callbackInfo = AccessTools.Field(typeof(ThingFilter), "settingsChangedCallback");
 		public static void AddFilter(StorageSettings settings, ThingFilter filter)
 		{
-			callbackInfo.SetValue(filter, callbackInfo.GetValue(settings.filter));
-			GetRanks(settings).Add(filter);
-
-			DetermineUsedFilter(settings);
+			ThingFilter newFilter = new ThingFilter(() => DetermineUsedFilter(settings));
+			newFilter.CopyAllowancesFrom(filter);
+			GetRanks(settings).Add(newFilter);
 		}
 
 		public static void CopyFrom(StorageSettings settings, StorageSettings other)
@@ -185,7 +183,7 @@ namespace Stockpile_Ranking
 				ranks.Clear();
 				foreach (ThingFilter otherFilter in otherRanks)
 				{
-					ThingFilter filter = new ThingFilter(callbackInfo.GetValue(settings.filter) as Action);
+					ThingFilter filter = new ThingFilter(() => DetermineUsedFilter(settings));
 					filter.CopyAllowancesFrom(otherFilter);
 					ranks.Add(filter);
 				}

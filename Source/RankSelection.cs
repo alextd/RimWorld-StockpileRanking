@@ -112,9 +112,7 @@ namespace Stockpile_Ranking
 			{
 				if (Widgets.ButtonImage(rightButtonRect, Tex.Plus))
 				{
-					ThingFilter newFilter = new ThingFilter();
-					newFilter.CopyAllowancesFrom(RankComp.GetFilter(settings, curRank++));
-					RankComp.AddFilter(settings, newFilter);
+					RankComp.AddFilter(settings, RankComp.GetFilter(settings, curRank++));
 				}
 			}
 			else
