@@ -16,9 +16,10 @@ namespace Stockpile_Ranking
 		//public void ExposeData()
 		public static void Postfix(StorageSettings __instance)
 		{
+			var comp = RankComp.Get();
 			if (Scribe.mode == LoadSaveMode.Saving)
 			{
-				List<ThingFilter> ranks = RankComp.GetRanks(__instance, false);
+				List<ThingFilter> ranks = comp.GetRanks(__instance, false);
 				if (ranks == null) return;
 
 				Scribe_Collections.Look(ref ranks, "ranks", LookMode.Deep);
@@ -30,7 +31,7 @@ namespace Stockpile_Ranking
 			if (loadRanks == null) return;
 
 			foreach (ThingFilter filter in loadRanks)
-				RankComp.AddFilter(__instance, filter);
+				comp.AddFilter(__instance, filter);
 		}
 	}
 
@@ -65,6 +66,18 @@ namespace Stockpile_Ranking
 				else
 					yield return i;
 			}
+		}
+	}
+
+	[HarmonyPatch(typeof(StorageSettings), "TryNotifyChanged")]
+	class TryNotifyChanged
+	{
+		//private void TryNotifyChanged()
+		public static void Prefix(StorageSettings __instance)
+		{
+			var comp = RankComp.Get();
+			comp.DetermineUsedFilter(__instance, comp.GetRanks(__instance, false));
+			//Not just making it dirty, since TryNotifyChanged probably uses the determined filter so it needs to be done now
 		}
 	}
 }

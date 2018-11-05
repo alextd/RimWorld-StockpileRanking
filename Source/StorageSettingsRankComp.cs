@@ -49,18 +49,9 @@ namespace Stockpile_Ranking
 				DetermineUsedFilter(kvp.Key, kvp.Value);
 		}
 
-		public static MethodInfo TryNotifyChangedInfo = AccessTools.Method(typeof(StorageSettings), "TryNotifyChanged");
-		public static void DetermineUsedFilter(StorageSettings settings, bool notify = true)
-		{
-			Get().DetermineUsedFilter(settings, GetRanks(settings, false));
-
-			if (notify) TryNotifyChangedInfo.Invoke(settings, null);
-		}
-
 		public void DetermineUsedFilter(StorageSettings settings, List<ThingFilter> ranks)
 		{
-			var comp = Get();
-			comp.usedFilter.Remove(settings);
+			usedFilter.Remove(settings);
 			if (ranks == null) return;
 
 			//Find map
@@ -131,10 +122,10 @@ namespace Stockpile_Ranking
 			}
 			return settings.filter;
 		}
-
-		public static List<ThingFilter> GetRanks(StorageSettings settings, bool create = true)
+		
+		public List<ThingFilter> GetRanks(StorageSettings settings, bool create = true)
 		{
-			var dict = Get().rankedSettings;
+			var dict = rankedSettings;
 			if (dict.TryGetValue(settings, out List<ThingFilter> list))
 				return list;
 			else if (!create)
@@ -150,58 +141,55 @@ namespace Stockpile_Ranking
 			return dict.ContainsKey(settings);
 		}
 
+		public static MethodInfo TryNotifyChangedInfo = AccessTools.Method(typeof(StorageSettings), "TryNotifyChanged");
 		public static void RemoveRanks(StorageSettings settings)
 		{
 			Get().rankedSettings.Remove(settings);
-			Get().usedFilter.Remove(settings);
 			
 			TryNotifyChangedInfo.Invoke(settings, null);
 		}
 
 		public static int CountExtraFilters(StorageSettings settings)
 		{
-			return GetRanks(settings, false)?.Count ?? 0;
+			return Get().GetRanks(settings, false)?.Count ?? 0;
 		}
 
-		public static void AddFilter(StorageSettings settings, ThingFilter filter)
+		public static FieldInfo callbackInfo = AccessTools.Field(typeof(ThingFilter), "settingsChangedCallback");
+		public static Action SettingsChangedAction(StorageSettings settings) => callbackInfo.GetValue(settings.filter) as Action;
+		public void AddFilter(StorageSettings settings, ThingFilter filter)
 		{
-			ThingFilter newFilter = new ThingFilter(() => DetermineUsedFilter(settings));
+			ThingFilter newFilter = new ThingFilter(SettingsChangedAction(settings));
 			newFilter.CopyAllowancesFrom(filter);
 			GetRanks(settings).Add(newFilter);
 		}
 
 		public static void CopyFrom(StorageSettings settings, StorageSettings other)
 		{
-			List<ThingFilter> otherRanks = GetRanks(other, false);
+			var comp = Get();
+			List<ThingFilter> otherRanks = comp.GetRanks(other, false);
 			if (otherRanks == null)
 			{
 				RemoveRanks(settings);
 			}
 			else
 			{
-				List<ThingFilter> ranks = GetRanks(settings);
-				ranks.Clear();
+				comp.GetRanks(settings).Clear();
 				foreach (ThingFilter otherFilter in otherRanks)
-				{
-					ThingFilter filter = new ThingFilter(() => DetermineUsedFilter(settings));
-					filter.CopyAllowancesFrom(otherFilter);
-					ranks.Add(filter);
-				}
+					comp.AddFilter(settings, otherFilter);
 			}
-			RankComp.DetermineUsedFilter(settings, false);
 		}
 
 		public static ThingFilter GetFilter(StorageSettings settings, int rank)
 		{
-			return rank == 0 ? settings.filter : GetRanks(settings)[rank - 1];
+			return rank == 0 ? settings.filter : Get().GetRanks(settings)[rank - 1];
 		}
-
+		
 		public static void RemoveFilter(StorageSettings settings, int rank)
 		{
 			if (rank == 0) return;//sanity check
-			GetRanks(settings).RemoveAt(rank - 1);
-			
-			DetermineUsedFilter(settings);
+			Get().GetRanks(settings).RemoveAt(rank - 1);
+
+			TryNotifyChangedInfo.Invoke(settings, null);
 		}
 	}
 }

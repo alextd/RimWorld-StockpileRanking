@@ -112,7 +112,7 @@ namespace Stockpile_Ranking
 			{
 				if (Widgets.ButtonImage(rightButtonRect, Tex.Plus))
 				{
-					RankComp.AddFilter(settings, RankComp.GetFilter(settings, curRank++));
+					RankComp.Get().AddFilter(settings, RankComp.GetFilter(settings, curRank++));
 				}
 			}
 			else
