@@ -12,6 +12,7 @@ namespace Stockpile_Ranking
 	{
 		public Dictionary<StorageSettings, List<ThingFilter>> rankedSettings = new Dictionary<StorageSettings, List<ThingFilter>>();
 		public Dictionary<StorageSettings, ThingFilter> usedFilter = new Dictionary<StorageSettings, ThingFilter>();
+		public bool dirty = false;
 
 		public RankComp(Game game) : base() { }
 
@@ -24,7 +25,11 @@ namespace Stockpile_Ranking
 		{
 			base.GameComponentTick();
 
-			DetermineUsedFilters();
+			if (dirty)
+			{
+				DetermineUsedFilters();
+				dirty = false;
+			}
 		}
 
 		public override void LoadedGame()
