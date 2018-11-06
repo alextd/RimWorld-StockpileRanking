@@ -1,2 +1,2 @@
 # RimWorld-StockpileRanking
-A mod for RimWorld - stockpiles get an ranking for preferred items
+A mod for RimWorld - stockpiles get a ranking for preferred items
