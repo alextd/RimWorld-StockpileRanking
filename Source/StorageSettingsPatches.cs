@@ -32,15 +32,13 @@ namespace Stockpile_Ranking
 				if (ranks == null) return;
 
 				Scribe_Collections.Look(ref ranks, "ranks", LookMode.Deep);
-				return;
 			}
-			List<ThingFilter> loadRanks = null;
-
-			Scribe_Collections.Look(ref loadRanks, "ranks", LookMode.Deep);
-			if (loadRanks == null) return;
-
-			foreach (ThingFilter filter in loadRanks)
-				comp.AddFilter(__instance, filter);
+			else if (Scribe.mode == LoadSaveMode.LoadingVars)
+			{
+				List<ThingFilter> loadRanks = null;
+				Scribe_Collections.Look(ref loadRanks, "ranks", LookMode.Deep);
+				comp.SetRanks(__instance, loadRanks);
+			}
 		}
 	}
 

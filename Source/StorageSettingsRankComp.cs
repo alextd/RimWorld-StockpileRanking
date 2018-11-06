@@ -175,6 +175,20 @@ namespace Stockpile_Ranking
 			GetRanks(settings).Add(newFilter);
 		}
 
+		public void SetRanks(StorageSettings settings, List<ThingFilter> newRanks)
+		{
+			if (newRanks == null)
+			{
+				rankedSettings.Remove(settings);
+			}
+			else
+			{
+				rankedSettings[settings] = newRanks;
+				foreach (ThingFilter filter in newRanks)
+					settingsChangedCallbackInfo.SetValue(filter, SettingsChangedAction(settings));
+			}
+		}
+
 		public void CopyFrom(StorageSettings settings, StorageSettings other)
 		{
 			List<ThingFilter> otherRanks = GetRanks(other, false);
