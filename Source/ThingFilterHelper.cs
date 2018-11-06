@@ -5,6 +5,7 @@ using System.Text;
 using System.Reflection;
 using Verse;
 using Harmony;
+using RimWorld;
 
 namespace Stockpile_Ranking
 {
@@ -20,7 +21,20 @@ namespace Stockpile_Ranking
 			foreach (SpecialThingFilterDef specDef in disallowedSpecialFilters)
 				if (other.Allows(specDef))
 					filter.SetAllow(specDef, true);
-			//todo HP AND Quality
+
+			QualityRange q = filter.AllowedQualityLevels;
+			QualityRange qO = other.AllowedQualityLevels;
+			Log.Message($"Adding {other} to {filter};{qO} to {q}");
+			q.max = q.max > qO.max ? q.max : qO.max;
+			q.min = q.min < qO.min ? q.min : qO.min;
+			filter.AllowedQualityLevels = q;
+			Log.Message($"Adding {other} to {filter};{qO} to {q}");
+
+			FloatRange hp = filter.AllowedHitPointsPercents;
+			FloatRange hpO = other.AllowedHitPointsPercents;
+			hp.max = Math.Max(hp.max, hpO.max);
+			hp.min = Math.Min(hp.min, hpO.min);
+			filter.AllowedHitPointsPercents = hp;
 		}
 	}
 }
