@@ -164,8 +164,8 @@ namespace Stockpile_Ranking
 			}
 		}
 
-		public static FieldInfo callbackInfo = AccessTools.Field(typeof(ThingFilter), "settingsChangedCallback");
-		public static Action SettingsChangedAction(StorageSettings settings) => callbackInfo.GetValue(settings.filter) as Action;
+		public static FieldInfo settingsChangedCallbackInfo = AccessTools.Field(typeof(ThingFilter), "settingsChangedCallback");
+		public static Action SettingsChangedAction(StorageSettings settings) => settingsChangedCallbackInfo.GetValue(settings.filter) as Action;
 		public void AddFilter(StorageSettings settings, ThingFilter filter = null)
 		{
 			if (filter == null)
