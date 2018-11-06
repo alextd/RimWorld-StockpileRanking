@@ -149,6 +149,21 @@ namespace Stockpile_Ranking
 			return GetRanks(settings, false)?.Last() ?? settings.filter;
 		}
 
+		public void CascadeDown(StorageSettings settings)
+		{
+			Log.Message($"Cascade down {settings.owner}");
+			List<ThingFilter> ranks = GetRanks(settings, false);
+			if (ranks == null) return;
+
+			ThingFilter higher = settings.filter;
+			for (int i = 0; i < ranks.Count; i++)
+			{
+				ThingFilter lower = ranks[i];
+				lower.Add(higher);
+				higher = lower;
+			}
+		}
+
 		public static FieldInfo callbackInfo = AccessTools.Field(typeof(ThingFilter), "settingsChangedCallback");
 		public static Action SettingsChangedAction(StorageSettings settings) => callbackInfo.GetValue(settings.filter) as Action;
 		public void AddFilter(StorageSettings settings, ThingFilter filter = null)
