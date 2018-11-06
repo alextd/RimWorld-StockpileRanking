@@ -18,8 +18,6 @@ namespace Stockpile_Ranking
 		{
 			MethodInfo AddInfo = AccessTools.Method(typeof(List<Thing>), "Add");
 			MethodInfo RemoveInfo = AccessTools.Method(typeof(List<Thing>), "Remove");
-			Log.Message($"AddInfo is {AddInfo}");
-			Log.Message($"RemoveInfo is {RemoveInfo}");
 
 			foreach (CodeInstruction i in instructions)
 			{

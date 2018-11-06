@@ -24,11 +24,9 @@ namespace Stockpile_Ranking
 
 			QualityRange q = filter.AllowedQualityLevels;
 			QualityRange qO = other.AllowedQualityLevels;
-			Log.Message($"Adding {other} to {filter};{qO} to {q}");
 			q.max = q.max > qO.max ? q.max : qO.max;
 			q.min = q.min < qO.min ? q.min : qO.min;
 			filter.AllowedQualityLevels = q;
-			Log.Message($"Adding {other} to {filter};{qO} to {q}");
 
 			FloatRange hp = filter.AllowedHitPointsPercents;
 			FloatRange hpO = other.AllowedHitPointsPercents;
