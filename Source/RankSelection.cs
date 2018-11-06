@@ -5,6 +5,7 @@ using System.Text;
 using System.Reflection;
 using System.Reflection.Emit;
 using Verse;
+using Verse.Sound;
 using RimWorld;
 using Harmony;
 using UnityEngine;
@@ -103,6 +104,7 @@ namespace Stockpile_Ranking
 			{
 				if (Widgets.ButtonImage(leftButtonRect, Tex.ArrowLeft))
 				{
+					SoundDefOf.Tick_Tiny.PlayOneShotOnCamera();
 					curRank--;
 				}
 			}
@@ -113,6 +115,7 @@ namespace Stockpile_Ranking
 			{
 				if (Widgets.ButtonImage(rightButtonRect, Tex.Plus))
 				{
+					SoundDefOf.Click.PlayOneShotOnCamera();
 					comp.AddFilter(settings);
 					curRank++;
 				}
@@ -121,6 +124,7 @@ namespace Stockpile_Ranking
 			{
 				if (Widgets.ButtonImage(rightButtonRect, Tex.ArrowRight))
 				{
+					SoundDefOf.Tick_Tiny.PlayOneShotOnCamera();
 					curRank++;
 				}
 			}
@@ -131,6 +135,7 @@ namespace Stockpile_Ranking
 			{
 				if (Widgets.ButtonImage(rightButtonRect, Tex.DeleteX))
 				{
+					SoundDefOf.Crunch.PlayOneShotOnCamera();
 					comp.RemoveFilter(settings, curRank--);
 				}
 			}
