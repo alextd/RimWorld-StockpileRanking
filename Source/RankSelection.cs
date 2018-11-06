@@ -84,9 +84,9 @@ namespace Stockpile_Ranking
 		public static PropertyInfo SelStoreInfo = AccessTools.Property(typeof(ITab_Storage), "SelStoreSettingsParent");
 		public static void DrawRanking(ITab_Storage tab)
 		{
-			IStoreSettingsParent storeSettingsParent = SelStoreInfo.GetValue(tab, null) as IStoreSettingsParent;
-			if (storeSettingsParent == null) return;
-			StorageSettings settings = storeSettingsParent.GetStoreSettings();
+			IHaulDestination haulDestination = SelStoreInfo.GetValue(tab, null) as IHaulDestination;
+			if (haulDestination == null) return;
+			StorageSettings settings = haulDestination.GetStoreSettings();
 			if (settings == null) return;
 
 			var comp = RankComp.Get();

@@ -55,13 +55,7 @@ namespace Stockpile_Ranking
 			if (ranks == null) return;
 
 			//Find map
-			Map map = null;
-			if (settings.owner is IHaulDestination haulDestination)
-				map = haulDestination.Map;
-			else if (settings.owner is CompChangeableProjectile thingComp)
-				map = thingComp.parent.Map;
-			else if (settings.owner is ISlotGroupParent slotGroupParent)//probably redundant
-				map = slotGroupParent.Map;
+			Map map = (settings.owner as IHaulDestination)?.Map;
 
 			if (map == null)
 				return;
