@@ -93,7 +93,7 @@ namespace Stockpile_Ranking
 			int count = comp.CountExtraFilters(settings);
 			if (curRank > count) curRank = count;
 
-			float buttonMargin = TopAreaHeight.rankHeight + 2;
+			float buttonMargin = TopAreaHeight.rankHeight + 4;
 
 			//ITab_Storage.WinSize = 300
 			Rect rect = new Rect(0f, (float)GetTopAreaHeight.Invoke(tab, new object[] { }) - TopAreaHeight.rankHeight - 2, 280, TopAreaHeight.rankHeight);
