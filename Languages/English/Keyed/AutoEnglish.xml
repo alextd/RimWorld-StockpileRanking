@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+	
+	<TD.AddFilter>Add filter ranking:</TD.AddFilter>
+	<TD.RankNum>Rank {0}</TD.RankNum>
+	<TD.SettingReturn>When higher ranked-items become available, make sure lower-ranked items are removed</TD.SettingReturn>
+	<TD.SettingDescCPU>This also will require more processing time. Disable it if there seems to be a slowdown problem.</TD.SettingDescCPU>
+	<TD.SettingDescLowerStorage>This assumes a stockpile with lower priority with space for lower-ranked items.</TD.SettingDescLowerStorage>
+	<TD.SettingDescDefault>Items would normally be returned when there is a spot in the ranked stockpile open (Not by design but due to internal cache)</TD.SettingDescDefault>
+	<TD.SettingDesc>(technically speaking, this option is a toggle: Process the ranked filters using either with all things, or only the things that need hauling. Some things don't know they could be hauled since the game's hauling system doesn't know about ranked stockpiles)</TD.SettingDesc>
+	<TD.StockpileRanking>Stockpile Ranking</TD.StockpileRanking>
+	
+</LanguageData>

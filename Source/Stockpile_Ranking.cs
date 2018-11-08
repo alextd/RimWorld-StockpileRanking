@@ -39,7 +39,7 @@ namespace Stockpile_Ranking
 
 		public override string SettingsCategory()
 		{
-			return "Stockpile Ranking";
+			return "TD.StockpileRanking".Translate();
 		}
 	}
 }
