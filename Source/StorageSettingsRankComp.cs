@@ -19,7 +19,7 @@ namespace Stockpile_Ranking
 
 		public static RankComp Get()
 		{
-			return Current.Game.GetComponent<RankComp>();
+			return Current.Game?.GetComponent<RankComp>();
 		}
 
 		public override void GameComponentTick()

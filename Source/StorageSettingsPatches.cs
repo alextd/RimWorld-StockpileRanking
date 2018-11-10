@@ -96,7 +96,7 @@ namespace Stockpile_Ranking
 		//private void TryNotifyChanged()
 		public static void Prefix(StorageSettings __instance)
 		{
-			RankComp.Get().CascadeDown(__instance);
+			RankComp.Get()?.CascadeDown(__instance);
 		}
 	}
 }
