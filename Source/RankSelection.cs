@@ -151,14 +151,14 @@ namespace Stockpile_Ranking
 		}
 	}
 
-	[HarmonyPatch(typeof(InspectTabBase), "OnOpen")]
-	static class ResetCurRank
-	{
-		//public virtual void OnOpen()
-		public static void Postfix(InspectTabBase __instance)
-		{
-			if (__instance is ITab_Storage)
-				FillTab.curRank = 0;
-		}
-	}
+	//[HarmonyPatch(typeof(InspectTabBase), "OnOpen")]
+	//static class ResetCurRank
+	//{
+	//	//public virtual void OnOpen()
+	//	public static void Postfix(InspectTabBase __instance)
+	//	{
+	//		if (__instance is ITab_Storage)
+	//			FillTab.curRank = 0;
+	//	}
+	//}
 }
