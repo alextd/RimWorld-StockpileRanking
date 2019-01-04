@@ -28,7 +28,7 @@ namespace Stockpile_Ranking
 			var comp = RankComp.Get();
 			if (Scribe.mode == LoadSaveMode.Saving)
 			{
-				List<ThingFilter> ranks = comp.GetRanks(__instance, false);
+				List<ThingFilter> ranks = comp?.GetRanks(__instance, false);
 				if (ranks == null) return;
 
 				Scribe_Collections.Look(ref ranks, "ranks", LookMode.Deep);
@@ -37,7 +37,7 @@ namespace Stockpile_Ranking
 			{
 				List<ThingFilter> loadRanks = null;
 				Scribe_Collections.Look(ref loadRanks, "ranks", LookMode.Deep);
-				comp.SetRanks(__instance, loadRanks);
+				comp?.SetRanks(__instance, loadRanks);
 			}
 		}
 	}
@@ -55,8 +55,7 @@ namespace Stockpile_Ranking
 			{
 				if(i.opcode == OpCodes.Call && i.operand == TryNotifyChangedInfo)
 				{
-					//RankComp.Get().CopyFrom(__instance, other);
-					yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(RankComp), nameof(RankComp.Get)));
+					//RankComp.CopyFrom(__instance, other);
 					yield return new CodeInstruction(OpCodes.Ldarg_0);//this
 					yield return new CodeInstruction(OpCodes.Ldarg_1);//other
 					yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(RankComp), nameof(RankComp.CopyFrom)));

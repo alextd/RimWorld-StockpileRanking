@@ -109,7 +109,8 @@ namespace Stockpile_Ranking
 		//This one is called from ilcode where it'd be tricky to get RankComp in front of arg list
 		public static ThingFilter UsedFilter(StorageSettings settings)
 		{
-			if (Get().usedFilter.TryGetValue(settings, out ThingFilter used))
+			var comp = Get();
+			if (comp != null && comp.usedFilter.TryGetValue(settings, out ThingFilter used))
 			{
 				return used;
 			}
@@ -183,27 +184,32 @@ namespace Stockpile_Ranking
 			}
 		}
 
-		public void CopyFrom(StorageSettings settings, StorageSettings other)
+		public static void CopyFrom(StorageSettings settings, StorageSettings other)
 		{
-			List<ThingFilter> otherRanks = GetRanks(other, false);
+			var comp = Get();
+			if (comp == null)	//fixed storage settings will copy do this copy on game load
+				return;
+
+			List<ThingFilter> otherRanks = comp.GetRanks(other, false);
 			if (otherRanks == null)
 			{
-				rankedSettings.Remove(settings);
+				comp.rankedSettings.Remove(settings);
 			}
 			else
 			{
-				GetRanks(settings).Clear();
+				comp.GetRanks(settings).Clear();
 				foreach (ThingFilter otherFilter in otherRanks)
-					AddFilter(settings, otherFilter);
+					comp.AddFilter(settings, otherFilter);
 			}
 
-			DetermineUsedFilter(settings, GetRanks(settings, false));
+			comp.DetermineUsedFilter(settings, comp.GetRanks(settings, false));
 		}
 
 		//This one is called from ilcode where it'd be tricky to get RankComp in front of arg list
 		public static ThingFilter GetFilter(StorageSettings settings, int rank)
 		{
-			return rank == 0 ? settings.filter : Get().GetRanks(settings)[rank - 1];
+			var comp = Get();
+			return comp == null || rank == 0 ? settings.filter : comp.GetRanks(settings)[rank - 1];
 		}
 
 		public static MethodInfo TryNotifyChangedInfo = AccessTools.Method(typeof(StorageSettings), "TryNotifyChanged");
