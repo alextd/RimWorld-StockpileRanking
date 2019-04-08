@@ -23,7 +23,8 @@ namespace Stockpile_Ranking
 			bool old = returnLower;
 			options.CheckboxLabeled("TD.SettingReturn".Translate(), ref returnLower);
 			if (old != returnLower)
-				RankComp.Get().dirty = true;
+				if (RankComp.Get() is RankComp comp)
+					comp.dirty = true;
 			options.Label("TD.SettingDescCPU".Translate());
 			options.Label("TD.SettingDescLowerStorage".Translate());
 			options.Label("TD.SettingDescDefault".Translate());
