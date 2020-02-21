@@ -7,7 +7,7 @@ using System.Reflection.Emit;
 using Verse;
 using Verse.Sound;
 using RimWorld;
-using Harmony;
+using HarmonyLib;
 using UnityEngine;
 
 namespace Stockpile_Ranking
@@ -51,8 +51,8 @@ namespace Stockpile_Ranking
 			{
 				CodeInstruction inst = instList[i];
 
-				if (inst.opcode == OpCodes.Ldfld && inst.operand == filterInfo &&
-					instList[i + 8].opcode == OpCodes.Call && instList[i + 8].operand == DoThingFilterConfigWindowInfo)
+				if (inst.opcode == OpCodes.Ldfld && inst.operand.Equals(filterInfo) &&
+					instList[i + 8].opcode == OpCodes.Call && instList[i + 8].operand.Equals(DoThingFilterConfigWindowInfo))
 				{
 					//instead of settings.filter, do RankComp.GetFilter(settings, curRank)
 					yield return new CodeInstruction(OpCodes.Ldsfld, AccessTools.Field(typeof(FillTab), "curRank"));
@@ -62,14 +62,14 @@ namespace Stockpile_Ranking
 					yield return inst;
 
 				if (firstTopAreaHeight && 
-					inst.opcode == OpCodes.Call && inst.operand == GetTopAreaHeight)
+					inst.opcode == OpCodes.Call && inst.operand.Equals(GetTopAreaHeight))
 				{
 					firstTopAreaHeight = false;
 					yield return new CodeInstruction(OpCodes.Ldc_R4, TopAreaHeight.rankHeight);
 					yield return new CodeInstruction(OpCodes.Sub);
 				}
 
-				if(inst.opcode == OpCodes.Call && inst.operand == BeginGroupInfo)
+				if(inst.opcode == OpCodes.Call && inst.operand.Equals(BeginGroupInfo))
 				{
 					yield return new CodeInstruction(OpCodes.Ldarg_0);//ITab_Storage this
 					yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(FillTab), nameof(DrawRanking)));

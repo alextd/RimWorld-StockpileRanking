@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Reflection;
 using Verse;
-using Harmony;
+using HarmonyLib;
 using RimWorld;
 
 namespace Stockpile_Ranking

@@ -6,7 +6,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using Verse;
 using RimWorld;
-using Harmony;
+using HarmonyLib;
 
 namespace Stockpile_Ranking
 {
@@ -23,7 +23,7 @@ namespace Stockpile_Ranking
 			{
 				yield return i;
 
-				if (i.operand == AddInfo || i.operand == RemoveInfo)
+				if (i.operand.Equals(AddInfo) || i.operand.Equals(RemoveInfo))
 				{
 					yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(RankComp), nameof(RankComp.Get)));//RankComp.Get()
 					yield return new CodeInstruction(OpCodes.Ldc_I4_1);//true

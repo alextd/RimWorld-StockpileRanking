@@ -3,7 +3,7 @@ using System.Linq;
 using Verse;
 using RimWorld;
 using UnityEngine;
-using Harmony;
+using HarmonyLib;
 
 namespace Stockpile_Ranking
 {
@@ -14,10 +14,10 @@ namespace Stockpile_Ranking
 			// initialize settings
 			GetSettings<Settings>();
 #if DEBUG
-			HarmonyInstance.DEBUG = true;
+			Harmony.DEBUG = true;
 #endif
 
-			HarmonyInstance harmony = HarmonyInstance.Create("Uuugggg.rimworld.Stockpile_Ranking.main");
+			Harmony harmony = new Harmony("Uuugggg.rimworld.Stockpile_Ranking.main");
 
 			//Turn off DefOf warning since harmony patches trigger it.
 			MethodInfo DefOfHelperInfo = AccessTools.Method(typeof(DefOfHelper), "EnsureInitializedInCtor");
