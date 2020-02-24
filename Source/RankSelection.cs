@@ -51,8 +51,8 @@ namespace Stockpile_Ranking
 			{
 				CodeInstruction inst = instList[i];
 
-				if (inst.opcode == OpCodes.Ldfld && inst.operand.Equals(filterInfo) &&
-					instList[i + 8].opcode == OpCodes.Call && instList[i + 8].operand.Equals(DoThingFilterConfigWindowInfo))
+				if (inst.LoadsField(filterInfo) &&
+					instList[i + 8].Calls(DoThingFilterConfigWindowInfo))
 				{
 					//instead of settings.filter, do RankComp.GetFilter(settings, curRank)
 					yield return new CodeInstruction(OpCodes.Ldsfld, AccessTools.Field(typeof(FillTab), "curRank"));
@@ -62,14 +62,14 @@ namespace Stockpile_Ranking
 					yield return inst;
 
 				if (firstTopAreaHeight && 
-					inst.opcode == OpCodes.Call && inst.operand.Equals(GetTopAreaHeight))
+					inst.Calls(GetTopAreaHeight))
 				{
 					firstTopAreaHeight = false;
 					yield return new CodeInstruction(OpCodes.Ldc_R4, TopAreaHeight.rankHeight);
 					yield return new CodeInstruction(OpCodes.Sub);
 				}
 
-				if(inst.opcode == OpCodes.Call && inst.operand.Equals(BeginGroupInfo))
+				if(inst.Calls(BeginGroupInfo))
 				{
 					yield return new CodeInstruction(OpCodes.Ldarg_0);//ITab_Storage this
 					yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(FillTab), nameof(DrawRanking)));

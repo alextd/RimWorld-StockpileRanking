@@ -53,7 +53,7 @@ namespace Stockpile_Ranking
 
 			foreach (CodeInstruction i in instructions)
 			{
-				if(i.opcode == OpCodes.Call && i.operand.Equals(TryNotifyChangedInfo))
+				if(i.Calls(TryNotifyChangedInfo))
 				{
 					//RankComp.CopyFrom(__instance, other);
 					yield return new CodeInstruction(OpCodes.Ldarg_0);//this
@@ -79,7 +79,7 @@ namespace Stockpile_Ranking
 				//RankComp.UsedFilter(this).Allows(t)
 				//so the ilcodes are this, filter, t, Allows
 				// replace filter with UsedFilter
-				if (i.opcode == OpCodes.Ldfld && i.operand.Equals(filterInfo))
+				if (i.LoadsField(filterInfo))
 				{
 					yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(RankComp), nameof(RankComp.UsedFilter)));
 				}
