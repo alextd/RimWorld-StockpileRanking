@@ -23,7 +23,7 @@ namespace Stockpile_Ranking
 			{
 				yield return i;
 
-				if (i.operand.Equals(AddInfo) || i.operand.Equals(RemoveInfo))
+				if (i.Calls(AddInfo) || i.Calls(RemoveInfo))
 				{
 					yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(RankComp), nameof(RankComp.Get)));//RankComp.Get()
 					yield return new CodeInstruction(OpCodes.Ldc_I4_1);//true
