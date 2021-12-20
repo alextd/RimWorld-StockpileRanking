@@ -43,7 +43,7 @@ namespace Stockpile_Ranking
 
 			//class Verse.ThingFilter RimWorld.StorageSettings::'filter'
 			FieldInfo filterInfo = AccessTools.Field(typeof(StorageSettings), "filter");
-			MethodInfo DoThingFilterConfigWindowInfo = AccessTools.Method(typeof(ThingFilterUI), "DoThingFilterConfigWindow");
+			int count = 0;
 
 			bool firstTopAreaHeight = true;
 			List<CodeInstruction> instList = instructions.ToList();
@@ -51,8 +51,19 @@ namespace Stockpile_Ranking
 			{
 				CodeInstruction inst = instList[i];
 
-				if (inst.LoadsField(filterInfo) &&
-					instList[i + 8].Calls(DoThingFilterConfigWindowInfo))
+				//replace
+				//  settings.filter
+				//with
+				//  RankComp.GetFilter(settings.filter, FillTab.curRank)
+				//but there's another .filter that is Parent filter so check for .settings
+
+				//IL_01f0: ldfld        class RimWorld.StorageSettings RimWorld.ITab_Storage/'<>c__DisplayClass12_0'::settings
+				//IL_01f5: ldfld        class Verse.ThingFilter RimWorld.StorageSettings::'filter'
+
+				//What why the ITab_Storage.\u003C\u003Ec__DisplayClass12_0 really
+
+				//Soo I guess just skip it for the first call to filter in the method
+				if (inst.LoadsField(filterInfo) && count++ > 0)
 				{
 					//instead of settings.filter, do RankComp.GetFilter(settings, curRank)
 					yield return new CodeInstruction(OpCodes.Ldsfld, AccessTools.Field(typeof(FillTab), "curRank"));
