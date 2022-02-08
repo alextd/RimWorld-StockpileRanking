@@ -76,7 +76,7 @@ namespace Stockpile_Ranking
 			//so then listerHaulables removes things that fit the higher-rank filter
 
 			List<Thing> haulables;
-			if (Settings.Get().returnLower)
+			if (Mod.settings.returnLower)
 				haulables = map.listerThings.ThingsInGroup(ThingRequestGroup.HaulableAlways).
 					FindAll(t => !t.IsForbidden(Faction.OfPlayer) &&
 					(StoreUtility.CurrentHaulDestinationOf(t)?.GetStoreSettings().Priority ?? StoragePriority.Unstored) < settings.Priority &&

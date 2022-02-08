@@ -6,14 +6,9 @@ using RimWorld;
 
 namespace Stockpile_Ranking
 {
-	class Settings : ModSettings
+	public class Settings : ModSettings
 	{
 		public bool returnLower;
-
-		public static Settings Get()
-		{
-			return LoadedModManager.GetMod<Stockpile_Ranking.Mod>().GetSettings<Settings>();
-		}
 
 		public void DoWindowContents(Rect wrect)
 		{
