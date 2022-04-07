@@ -39,7 +39,7 @@ namespace Stockpile_Ranking
 		public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
 		{
 			//		public static void BeginGroup(Rect position);
-			MethodInfo BeginGroupInfo = AccessTools.Method(typeof(GUI), nameof(GUI.BeginGroup), new Type[] { typeof(Rect) });
+			MethodInfo BeginGroupInfo = AccessTools.Method(typeof(Widgets), nameof(Widgets.BeginGroup), new Type[] { typeof(Rect) });
 
 			//class Verse.ThingFilter RimWorld.StorageSettings::'filter'
 			FieldInfo filterInfo = AccessTools.Field(typeof(StorageSettings), "filter");
