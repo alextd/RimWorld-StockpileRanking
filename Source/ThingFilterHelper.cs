@@ -11,14 +11,14 @@ namespace Stockpile_Ranking
 {
 	static class ThingFilterHelper
 	{
-		public static FieldInfo specials = AccessTools.Field(typeof(ThingFilter), "disallowedSpecialFilters");
+		public static AccessTools.FieldRef<ThingFilter, List<SpecialThingFilterDef>> disallowedSpecialFilters =
+			AccessTools.FieldRefAccess<ThingFilter, List<SpecialThingFilterDef>>(AccessTools.Field(typeof(ThingFilter), "disallowedSpecialFilters"));
 		public static void Add(this ThingFilter filter, ThingFilter other)
 		{
 			foreach (ThingDef def in other.AllowedThingDefs)
 				filter.SetAllow(def, true);
 
-			List<SpecialThingFilterDef> disallowedSpecialFilters = (List <SpecialThingFilterDef> )specials.GetValue(other);
-			foreach (SpecialThingFilterDef specDef in disallowedSpecialFilters)
+			foreach (SpecialThingFilterDef specDef in disallowedSpecialFilters(other))
 				if (other.Allows(specDef))
 					filter.SetAllow(specDef, true);
 

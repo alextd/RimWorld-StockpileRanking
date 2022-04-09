@@ -159,13 +159,15 @@ namespace Stockpile_Ranking
 			}
 		}
 
-		public static FieldInfo settingsChangedCallbackInfo = AccessTools.Field(typeof(ThingFilter), "settingsChangedCallback");
-		public static Action SettingsChangedAction(StorageSettings settings) => settingsChangedCallbackInfo.GetValue(settings.filter) as Action;
+		//private Action settingsChangedCallback;
+		public static AccessTools.FieldRef<ThingFilter, Action> settingsChangedCallback =
+			AccessTools.FieldRefAccess<ThingFilter, Action>("settingsChangedCallback");
+
 		public void AddFilter(StorageSettings settings, ThingFilter filter = null)
 		{
 			if (filter == null)
 				filter = GetLowestFilter(settings);
-			ThingFilter newFilter = new ThingFilter(SettingsChangedAction(settings));
+			ThingFilter newFilter = new ThingFilter(settingsChangedCallback(settings.filter));
 			newFilter.CopyAllowancesFrom(filter);
 			GetRanks(settings).Add(newFilter);
 		}
@@ -180,7 +182,7 @@ namespace Stockpile_Ranking
 			{
 				rankedSettings[settings] = newRanks;
 				foreach (ThingFilter filter in newRanks)
-					settingsChangedCallbackInfo.SetValue(filter, SettingsChangedAction(settings));
+					settingsChangedCallback(filter) = settingsChangedCallback(settings.filter);
 			}
 		}
 
@@ -212,7 +214,10 @@ namespace Stockpile_Ranking
 			return comp == null || rank == 0 ? settings.filter : comp.GetRanks(settings)[rank - 1];
 		}
 
-		public static MethodInfo TryNotifyChangedInfo = AccessTools.Method(typeof(StorageSettings), "TryNotifyChanged");
+		//private void TryNotifyChanged()
+		public delegate void TryNotifyChangedDel(StorageSettings set);
+		public static TryNotifyChangedDel TryNotifyChanged =
+			AccessTools.MethodDelegate<TryNotifyChangedDel>(AccessTools.Method(typeof(StorageSettings), "TryNotifyChanged"));
 		public void RemoveFilter(StorageSettings settings, int rank)
 		{
 			if (rank == 0) return;//sanity check
@@ -226,7 +231,7 @@ namespace Stockpile_Ranking
 				ranks.RemoveAt(rank - 1);
 			}
 
-			TryNotifyChangedInfo.Invoke(settings, null);
+			TryNotifyChanged(settings);
 			DetermineUsedFilter(settings, GetRanks(settings, false));
 		}
 	}

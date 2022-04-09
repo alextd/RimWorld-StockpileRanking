@@ -93,9 +93,14 @@ namespace Stockpile_Ranking
 		//-----------------------------------------------
 		public static int curRank = 0;
 		public static PropertyInfo SelStoreInfo = AccessTools.Property(typeof(ITab_Storage), "SelStoreSettingsParent");
+
+		public delegate IStoreSettingsParent SelStoreSettingsParentDel(ITab_Storage tab);
+		public static SelStoreSettingsParentDel SelStoreSettingsParent = AccessTools.MethodDelegate<SelStoreSettingsParentDel>(
+			AccessTools.PropertyGetter(typeof(ITab_Storage), "SelStoreSettingsParent"));
+
 		public static void DrawRanking(ITab_Storage tab)
 		{
-			IHaulDestination haulDestination = SelStoreInfo.GetValue(tab, null) as IHaulDestination;
+			IHaulDestination haulDestination = SelStoreSettingsParent(tab) as IHaulDestination;
 			if (haulDestination == null) return;
 			StorageSettings settings = haulDestination.GetStoreSettings();
 			if (settings == null) return;

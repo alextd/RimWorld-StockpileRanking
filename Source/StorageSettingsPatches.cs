@@ -15,14 +15,14 @@ namespace Stockpile_Ranking
 	{
 		public static void Prefix(StorageSettings __instance, ref Action __state)
 		{
-			__state = RankComp.settingsChangedCallbackInfo.GetValue(__instance.filter) as Action;
+			__state = RankComp.settingsChangedCallback(__instance.filter);
 		}
 		public static void Postfix(StorageSettings __instance, Action __state)
 		{
 			//BUG FIX TIME
 			//public void ExposeData() in StorageSettings would re-assign the filter, meaning the action passed to its ctor was lost
 			//so workaround, save it before ExposeData and re-assign it
-			RankComp.settingsChangedCallbackInfo.SetValue(__instance.filter, __state);
+			RankComp.settingsChangedCallback(__instance.filter) = __state;
 
 			//Save/load the ranked filters in a list
 			var comp = RankComp.Get();

@@ -21,7 +21,7 @@ namespace Stockpile_Ranking
 		public static void Postfix(ThingFilter filter, FloatRange __state)
 		{
 			if (__state != filter.AllowedHitPointsPercents)
-				if (RankComp.settingsChangedCallbackInfo.GetValue(filter) is Action a)
+				if (RankComp.settingsChangedCallback(filter) is Action a)
 					a();
 		}
 	}
@@ -37,7 +37,7 @@ namespace Stockpile_Ranking
 		public static void Postfix(ThingFilter filter, QualityRange __state)
 		{
 			if (__state != filter.AllowedQualityLevels)
-				if(RankComp.settingsChangedCallbackInfo.GetValue(filter) is Action a)
+				if(RankComp.settingsChangedCallback(filter) is Action a)
 					a();
 		}
 	}
