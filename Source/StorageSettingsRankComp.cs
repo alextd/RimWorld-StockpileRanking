@@ -55,12 +55,14 @@ namespace Stockpile_Ranking
 			if (ranks == null) return;
 
 			//Find map
-			Map map = (settings.owner as IHaulDestination)?.Map;
+			Log.Message($"DetermineUsedFilter for {settings.owner}");
+			Map map = (settings.owner as IHaulDestination)?.Map ?? (settings.owner as StorageGroup)?.Map;
 
 			if (map == null)
+			{
+				Log.Message("Oh no, no map!");
 				return;
-
-			Log.Message($"DetermineUsedFilter for {settings.owner}");
+			}
 
 			//First filter is just the one in the settings
 			ThingFilter bestFilter = settings.filter;
@@ -191,6 +193,8 @@ namespace Stockpile_Ranking
 			var comp = Get();
 			if (comp == null)	//fixed storage settings will copy do this copy on game load
 				return;
+
+			Log.Message($"Copying {settings.owner}:{settings} from {other.owner}:{other}");
 
 			List<ThingFilter> otherRanks = comp.GetRanks(other, false);
 			if (otherRanks == null)
