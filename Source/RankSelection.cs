@@ -101,7 +101,10 @@ namespace Stockpile_Ranking
 		public static void DrawRanking(ITab_Storage tab)
 		{
 			IHaulDestination haulDestination = SelStoreSettingsParent(tab) as IHaulDestination;
+
+			// We only care about hauldestinations. Any other filters will not use Stockpile Ranking.
 			if (haulDestination == null) return;
+
 			StorageSettings settings = haulDestination.GetStoreSettings();
 			if (settings == null) return;
 
