@@ -167,7 +167,7 @@ namespace Stockpile_Ranking
 		{
 			if (filter == null)
 				filter = GetLowestFilter(settings);
-			ThingFilter newFilter = new ThingFilter(settingsChangedCallback(settings.filter));
+			ThingFilter newFilter = new ThingFilter(settingsChangedCallback(settings.filter)); // () => settings.TryN nope that's private too ffs.
 			newFilter.CopyAllowancesFrom(filter);
 			GetRanks(settings).Add(newFilter);
 		}
