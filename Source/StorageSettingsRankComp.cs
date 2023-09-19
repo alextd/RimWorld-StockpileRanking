@@ -159,6 +159,8 @@ namespace Stockpile_Ranking
 				lower.Add(higher);
 				higher = lower;
 			}
+
+			dirty = true;
 		}
 
 		//private Action settingsChangedCallback;
